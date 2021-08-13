@@ -6,7 +6,7 @@ using System.Linq;
 namespace Alura.WebAPI.WebApp.Api
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class LivrosController : ControllerBase
     {
         private readonly IRepository<Livro> _repo;
@@ -15,11 +15,11 @@ namespace Alura.WebAPI.WebApp.Api
         {
             _repo = repository;
         }
-        
+
         [HttpGet]
         public IActionResult ListaDeLivros()
         {
-            var lista = _repo.All.Select(l => l.ToModel()).ToList();
+            var lista = _repo.All.Select(l => l.ToApi()).ToList();
             return Ok(lista);
         }
 
@@ -27,17 +27,31 @@ namespace Alura.WebAPI.WebApp.Api
         public IActionResult Recuperar(int id)
         {
             var model = _repo.Find(id);
-            if(model == null)
+            if (model == null)
             {
                 return NotFound();
             }
-            return Ok(model.ToModel());
+            return Ok(model.ToApi());
+        }
+
+        [HttpGet("{id}/capa")]
+        public IActionResult ImagemCapa(int id)
+        {
+                byte[] img = _repo.All
+                                    .Where(l => l.Id == id)
+                                    .Select(l => l.ImagemCapa)
+                                    .FirstOrDefault();
+                if (img != null)
+                {
+                    return File(img, "image/png");
+                }
+            return File("~/images/capas/capa-vazia.png", "image/png");
         }
 
         [HttpPost]
         public IActionResult Incluir(LivroUpload model)
         {
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 var livro = model.ToLivro();
                 _repo.Incluir(livro);
@@ -50,7 +64,7 @@ namespace Alura.WebAPI.WebApp.Api
         [HttpPut]
         public IActionResult Alterar(LivroUpload model)
         {
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 var livro = model.ToLivro();
                 if (model.Capa == null)
@@ -70,7 +84,7 @@ namespace Alura.WebAPI.WebApp.Api
         public IActionResult Remover(int id)
         {
             var model = _repo.Find(id);
-            if(model == null)
+            if (model == null)
             {
                 return NotFound();
             }
