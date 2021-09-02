@@ -57,6 +57,7 @@ namespace Alura.ListaLeitura.WebApp
                     ValidateIssuer = true,
                     ValidateAudience = true,
                     ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding
                     .UTF8.GetBytes("alura-webapi-authenticate")),
                     ClockSkew = System.TimeSpan.FromMinutes(5),
