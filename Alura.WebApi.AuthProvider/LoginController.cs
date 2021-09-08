@@ -8,7 +8,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
-namespace Alura.ListaLeitura.Services
+namespace Alura.WebApi.AuthProvider
 {
     [ApiController]
     [Route("api/[controller]")]
